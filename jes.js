@@ -3,38 +3,44 @@ const mealList = document.getElementById('meal');
 const mealDetailsContent = document.querySelector('.meal-details-content');
 const recipeCloseBtn = document.getElementById('recipe-close-btn');
 
-searchBtn.addEventListener('click', getMealList)
-mealList.addEventListener('click', getMealRecipe)
+searchBtn.addEventListener('click', getMealList);
+mealList.addEventListener('click', getMealRecipe);
+recipeCloseBtn.addEventListener('click', () => {
+    mealDetailsContent.parentElement.classList.remove('showRecipe');
+})
 
 function getMealList() {
     let searchInputTxt = document.getElementById('search-input').value.trim();
+ 
     fetch(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=7c24c5f6779b417a8c7f91021d764914&ingredients=${searchInputTxt}`)
-        .then(response => response.json())
-        .then(data => {
-            let html = "";
-            if (data.length > 0) {
-                data.forEach(results => {
-                    html += `
-                     <div class="meal-item" data-id="${results.id}" data-title="${results.title}">
-                         <div class="meal-img">
-                             <img src="${results.image}" alt="food">
-                         </div>
-                         <div class="meal-name">
-                             <h3>${results.title}</h3>
-                             <a href="#" class="recipe-btn">Get Recipe</a>
-                         </div>
+    .then(response => response.json())
+    .then(data => {
+        let html = "";
+        if (data.length > 0) {
+            data.forEach(results => {
+                html += `
+                 <div class="meal-item" data-id="${results.id}" data-title="${results.title}">
+                     <div class="meal-img">
+                         <img src="${results.image}" alt="food">
                      </div>
-                `;
-                });
-                mealList.classList.remove('notFound');
-            }
-            else {
-                html = "No results";
-                mealList.classList.add('notFound');
-            }
+                     <div class="meal-name">
+                         <h3>${results.title}</h3>
+                         <a href="#" class="recipe-btn">Get Recipe</a>
+                     </div>
+                 </div>
+            `;
+            });
+            mealList.classList.remove('notFound');
+        }
+        else {
+            html = "No results";
+            mealList.classList.add('notFound');
+        }
 
-            mealList.innerHTML = html;
-        })
+        mealList.innerHTML = html;
+    })
+   
+    
 }
 
 function getMealRecipe(e) {
@@ -54,26 +60,77 @@ function getMealRecipe(e) {
 function mealRecipeModal(meal) {
     console.log(meal);
     let mealItemTitle = meal.title;
-console.log(mealItemTitle);
-    let mealCategory = meal.dishTypes[0].charAt(0).toUpperCase() + meal.dishTypes[0].slice(1);
-    mealInstructions = meal.instructions;
-    let html = `
-    
-    <h2 class="recipe-title">${mealItemTitle}</h2>
-    <p class="recipe-category">${mealCategory}</p>
-    <div class="recipe-instruct">
-        <h3>Instructions:</h3>
-        <p>${mealInstructions}</p>
+    console.log(mealItemTitle);
+    if (meal.dishTypes.length == 0) {
+        if (meal.cuisines) {
+            let altName = linearSearchForCuisines(meal);
+            //let mealCategory = meal.cuisines[0].charAt(0).toUpperCase() + meal.cuisines[0].slice(1);
+            mealInstructions = meal.instructions;
+            let html = `
+            <h2 class="recipe-title">${mealItemTitle}</h2>
+            <h3 class="recipe-sub">Information</h3>
+            <p class="recipe-category">${altName}</p>
+            <div class="recipe-instruct">
+                <h3>Instructions:</h3>
+                <p>${mealInstructions}</p>
+                
         
+            </div>
+            <div class="recipe-meal-img">
+                <img src="${meal.image}" alt="">
+            </div>
+            <div class="recipe-link">
+                <a href="${meal.sourceUrl}" target="_blank">Source</a>
+            </div>
+            `;
 
-    </div>
-    <div class="recipe-meal-img">
-        <img src="food.jpg" alt="">
-    </div>
-    <div class="recipe-link">
-        <a href="#" target="_blank">Watch Video</a>
-    </div>
-    `;
+
+            mealDetailsContent.innerHTML = html;
+            mealDetailsContent.parentElement.classList.add('showRecipe');
+        }
+
+
+    }
+    else {
+        let mealCategory = meal.dishTypes[0].charAt(0).toUpperCase() + meal.dishTypes[0].slice(1);
+        mealInstructions = meal.instructions;
+        let html = `
+        <h2 class="recipe-title">${mealItemTitle}</h2>
+        <h3 class="recipe-sub">Category</h3>
+        <p class="recipe-category">${mealCategory}</p>
+        <div class="recipe-instruct">
+            <h3>Instructions:</h3>
+            <p>${mealInstructions}</p>
+            
+    
+        </div>
+        <div class="recipe-meal-img">
+            <img src="${meal.image}" alt="">
+        </div>
+        <div class="recipe-link">
+            <a href="${meal.sourceUrl}" target="_blank">Source</a>
+        </div>
+        `;
+
+
+        mealDetailsContent.innerHTML = html;
+        mealDetailsContent.parentElement.classList.add('showRecipe');
+
+    }
+
+}
+
+function linearSearchForCuisines(meal) {
+    for (let key in meal) {
+        if (key === 'cuisines') {
+            if (key == !null) { return meal[key]; }
+        }
+         if (key === 'diets') {
+            return meal.diets[0];
+        }
+
+    }
+    return alert('Cuisines not found in meal object');
 }
 
 
