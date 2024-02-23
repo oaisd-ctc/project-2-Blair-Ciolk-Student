@@ -11,9 +11,16 @@ recipeCloseBtn.addEventListener('click', () => {
 
 function getMealList() {
     let searchInputTxt = document.getElementById('search-input').value.trim();
- 
+    let mealResults = document.getElementById('meal').html;
     fetch(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=7c24c5f6779b417a8c7f91021d764914&ingredients=${searchInputTxt}`)
-    .then(response => response.json())
+    .then((response) => {
+        if(!response.ok)
+        {
+            mealResults =response.status;
+            throw new Error(`HTTP error`);
+        }
+        return response.json()
+    })
     .then(data => {
         let html = "";
         if (data.length > 0) {
@@ -56,6 +63,15 @@ function getMealRecipe(e) {
             })
     }
 }
+function escapeHTML(unsafe)
+{
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"g/, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
 function mealRecipeModal(meal) {
     console.log(meal);
@@ -84,8 +100,8 @@ function mealRecipeModal(meal) {
             </div>
             `;
 
-
-            mealDetailsContent.innerHTML = html;
+            let xssFree = escapeHTML(html);
+            mealDetailsContent.innerHTML = xssFree; 
             mealDetailsContent.parentElement.classList.add('showRecipe');
         }
 
@@ -112,8 +128,8 @@ function mealRecipeModal(meal) {
         </div>
         `;
 
-
-        mealDetailsContent.innerHTML = html;
+        let xssFree = escapeHTML(html);
+        mealDetailsContent.innerHTML = xssFree;
         mealDetailsContent.parentElement.classList.add('showRecipe');
 
     }
