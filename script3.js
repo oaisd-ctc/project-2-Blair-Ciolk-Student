@@ -86,8 +86,12 @@ function CensorText(uncensored) {
         || uncensored.includes("relationship") || uncensored.includes("date") || uncensored.includes("Date") || uncensored.includes("dating")
         || uncensored.includes("jack off") || uncensored.includes("jackoff") || uncensored.includes("pick your nose") 
         || uncensored.includes("yeast infection") || uncensored.includes("capitalism") || uncensored.includes("Capitalist") 
-        || uncensored.includes("capital")  || uncensored.includes("cotton-pick")  || uncensored.includes("cotton pick") || uncensored.includes("cottonp")
-        || uncensored.includes("shit"))
+        || uncensored.includes("capital")  || uncensored.includes("cotton-pick")  || uncensored.includes("cotton pick")
+        || uncensored.includes("cottonp") || uncensored.includes("Chinese") || uncensored.includes("Nazi") || uncensored.includes("Chi")
+        || uncensored.includes("shit") || uncensored.includes("prostitute") || uncensored.includes("Hillary")  || uncensored.includes("Clinton")
+        || uncensored.includes("biden") || uncensored.includes("Biden")  || uncensored.includes("whiskey") || uncensored.includes("vodka")
+        || uncensored.includes("dirty joke") || uncensored.includes("retar") || uncensored.includes("midget") || uncensored.includes("Libyan")
+        || uncensored.includes("libyan"))
         
          {
         console.log("Contains innapropriate content");
