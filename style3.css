@@ -309,7 +309,7 @@ control,
 .navbar a {
     float: left;
     display: block;
-    color: #f2f2f2;
+    color: #000000;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
@@ -318,14 +318,14 @@ control,
 
 /* Change the color of links on hover */
 .navbar a:hover {
-    background-color: #ddd;
+    background-color: var(--tenne-tawny-dark);
     color: black;
 }
 
 /* Add a color to the active/current link */
 .navbar a.active {
-    background-color: var(--renne-rawny);
-    color: white;
+    background-color: var(--tenne-tawny-dark);
+    color: rgb(0, 0, 0);
 }
 
 .meal-search{

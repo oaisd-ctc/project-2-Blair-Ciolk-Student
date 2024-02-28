@@ -3,11 +3,20 @@ const recipeCloseBtn = document.getElementById('recipe-close-btn');
 const mealList = document.getElementById('meal');
 const fetchButton = document.getElementById('fetchButton');
 const dataContainer = document.getElementById('meal-details-content');
-fetchButton.addEventListener('click', fetchData);
+fetchButton.addEventListener('click', handleClick);
 mealList.addEventListener('click', getMealRecipe);
 recipeCloseBtn.addEventListener('click', () => {
     dataContainer.parentElement.classList.remove('showRecipe');
 });
+
+function handleClick() {
+    fetchData();
+    fetchButton.disabled = true;
+
+    setTimeout(() => {
+        fetchButton.disabled = false;
+    }, 3000)
+}
 
 function fetchData() {
     fetch('https://api.spoonacular.com/recipes/random?apiKey=7c24c5f6779b417a8c7f91021d764914&number=6')
@@ -19,7 +28,7 @@ function fetchData() {
                     html += `
                     <div class="meal-item" data-id="${recipe.id}" data-title="${recipe.title}">
                         <div class="meal-img">
-                            <img src="${recipe.image}" alt="food">
+                            <img src="${recipe.image}" alt="IMAGE NOT AVAILABLE, PLEASE CHECK SOURCE">
                         </div>
                         <div class="meal-name">
                             <h3>${recipe.title}</h3>
