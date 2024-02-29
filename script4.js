@@ -3,6 +3,7 @@ const mealList = document.getElementById('meal');
 const mealDetailsContent = document.querySelector('.meal-details-content');
 const recipeCloseBtn = document.getElementById('recipe-close-btn');
 
+
 searchBtn.addEventListener('click', getMealList);
 mealList.addEventListener('click', getMealRecipe);
 recipeCloseBtn.addEventListener('click', () => {
@@ -12,7 +13,7 @@ recipeCloseBtn.addEventListener('click', () => {
 function getMealList() {
     let searchInputTxt = document.getElementById('search-input').value.trim();
     let mealResults = document.getElementById('meal').html;
-    fetch(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=7c24c5f6779b417a8c7f91021d764914&ingredients=${searchInputTxt}`)
+    fetch(`https://api.spoonacular.com/food/videos/search?apiKey=7c24c5f6779b417a8c7f91021d764914&query=${searchInputTxt}`)
     .then((response) => {
         if(!response.ok)
         {
@@ -23,16 +24,16 @@ function getMealList() {
     })
     .then(data => {
         let html = "";
-        if (data.length > 0) {
-            data.forEach(results => {
+        if (data.videos.length > 0) {
+            data.videos.forEach(results => {
                 html += `
-                 <div class="meal-item" data-id="${results.id}" data-title="${results.title}">
+                 <div class="meal-item" data-id="${results.youTubeId}" data-title="${results.title}">
                      <div class="meal-img">
-                         <img src="${results.image}" alt="food">
+                         <img src="${results.thumbnail}" alt="food">
                      </div>
                      <div class="meal-name">
-                         <h3>${results.title}</h3>
-                         <a href="#" class="recipe-btn">Get Recipe</a>
+                         <h3>${results.shortTitle}</h3>
+                         <a href="#" class="recipe-btn">Watch Video</a>
                      </div>
                  </div>
             `;
@@ -44,7 +45,7 @@ function getMealList() {
             mealList.classList.add('notFound');
         }
 
-        mealList.innerHTML = html;
+        mealList.innerHTML = escapeHTML(html);
     })
    
     
@@ -54,23 +55,13 @@ function getMealRecipe(e) {
     e.preventDefault();
     if (e.target.classList.contains('recipe-btn')) {
         var mealItemID = e.target.parentElement.parentElement.getAttribute("data-id");
-        let mealItem = e.target.parentElement.parentElement;
         //console.log(mealItem);
-        fetch(`https://api.spoonacular.com/recipes/${mealItemID}/information?apiKey=7c24c5f6779b417a8c7f91021d764914&includeNutrition=false`)
-            .then(response => response.json())
-            .then(data => {
-                mealRecipeModal(data);
-            })
+        window.open(`https://www.youtube.com/watch?v=${mealItemID}`, '_blank');
     }
 }
 function escapeHTML(unsafe)
 {
-    return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"g/, "&quot;")
-        .replace(/'/g, "&#039;");
+    return DOMPurify.sanitize(unsafe);
 }
 
 function mealRecipeModal(meal) {
@@ -84,24 +75,24 @@ function mealRecipeModal(meal) {
             mealInstructions = meal.instructions;
             let html = `
             <h2 class="recipe-title">${mealItemTitle}</h2>
+            <div class="recipe-meal-img">
+                <img src="${meal.image}" alt="">
+            </div>
             <h3 class="recipe-sub">Information</h3>
             <p class="recipe-category">${altName}</p>
+            <h3 class="recipe-sub">Vegan?</h3>
+            <p class="recipe-isVegan">${meal.vegan}</p>
             <div class="recipe-instruct">
                 <h3>Instructions:</h3>
                 <p>${mealInstructions}</p>
-                
-        
-            </div>
-            <div class="recipe-meal-img">
-                <img src="${meal.image}" alt="">
             </div>
             <div class="recipe-link">
                 <a href="${meal.sourceUrl}" target="_blank">Source</a>
             </div>
             `;
 
-            let xssFree = escapeHTML(html);
-            mealDetailsContent.innerHTML = xssFree; 
+            let sanitizedInput = escapeHTML(html);
+            mealDetailsContent.innerHTML = sanitizedInput; 
             mealDetailsContent.parentElement.classList.add('showRecipe');
         }
 
@@ -114,6 +105,8 @@ function mealRecipeModal(meal) {
         <h2 class="recipe-title">${mealItemTitle}</h2>
         <h3 class="recipe-sub">Category</h3>
         <p class="recipe-category">${mealCategory}</p>
+        <h3 class="recipe-sub">Vegan?</h3>
+        <p class="recipe-isVegan">${meal.vegan}</p>
         <div class="recipe-instruct">
             <h3>Instructions:</h3>
             <p>${mealInstructions}</p>
@@ -128,10 +121,9 @@ function mealRecipeModal(meal) {
         </div>
         `;
 
-        let xssFree = escapeHTML(html);
-        mealDetailsContent.innerHTML = xssFree;
+        let sanitizedInput = escapeHTML(html);
+        mealDetailsContent.innerHTML = sanitizedInput;
         mealDetailsContent.parentElement.classList.add('showRecipe');
-
     }
 
 }
