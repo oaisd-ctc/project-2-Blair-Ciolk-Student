@@ -14,6 +14,7 @@ html{
 }
 :root{
     --tenne-tawny: #b7a367;
+    --tenne-tawnee: #a8955c;
     --tenne-tawny-dark: #ccb778;
     --renne-rawny: #c5bf89;
 }
@@ -106,7 +107,7 @@ body{
     margin: 2.4rem 0;
 }
 .meal-item{
-    background-color: var(--tenne-tawny);
+    background-color: var(--tenne-tawnee);
     border-radius: 1rem;
     -webkit-border-radius: 1rem;
     -moz-border-radius: 1rem;
