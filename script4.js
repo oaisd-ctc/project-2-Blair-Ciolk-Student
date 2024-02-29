@@ -22,6 +22,10 @@ function getMealList() {
         }
         return response.json()
     })
+    .catch(error => {
+        dataContainer.innerHTML = '<p>An error occurred while fetching data</p>';
+        console.error(error);
+    })
     .then(data => {
         let html = "";
         if (data.videos.length > 0) {

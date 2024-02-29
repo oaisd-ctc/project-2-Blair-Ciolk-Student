@@ -47,6 +47,7 @@ function fetchData() {
         })
         .catch(error => {
             dataContainer.innerHTML = '<p>An error occurred while fetching data</p>';
+            console.error(error);
         });
 }
 
@@ -56,6 +57,10 @@ function getMealRecipe(e) {
         var mealItemID = e.target.parentElement.parentElement.getAttribute("data-id");
         fetch(`https://api.spoonacular.com/recipes/${mealItemID}/information?apiKey=7c24c5f6779b417a8c7f91021d764914&includeNutrition=false`)
             .then(response => response.json())
+            .catch(error => {
+                dataContainer.innerHTML = '<p>An error occurred while fetching data</p>';
+                console.error(error);
+            })
             .then(data => {
                 mealRecipeModal(data);
             })
@@ -66,17 +71,32 @@ function mealRecipeModal(meal) {
     let mealItemTitle = meal.title;
     let mealInstructions = meal.instructions;
     let mealCategory = meal.dishTypes.length > 0 ? meal.dishTypes[0].charAt(0).toUpperCase() + meal.dishTypes[0].slice(1) : linearSearchForCuisines(meal);
+    if(meal.vegan == true)
+            {
+                mealVegan = "True";
+            }
+            else{
+                mealVegan = "False";
+            }
+    console.warn(`Category: ${mealCategory}`);
 
     let html = `
         <h2 class="recipe-title">${mealItemTitle}</h2>
         <div class="recipe-meal-img">
             <img src="${meal.image}" alt="">
         </div>
+        <h3 class="recipe-subInfo">Information</h3>
+        <h3 class="recipe-sub">Prep Time</h3>
+            <p class="recipe-isVegan">${meal.readyInMinutes} minutes</p>
         <h3 class="recipe-sub">Category</h3>
         <p class="recipe-category">${mealCategory}</p>
         <br> <br>
         <h3 class="recipe-sub">Vegan?</h3>
-        <p class="recipe-isVegan">${meal.vegan}</p>
+        <p class="recipe-isVegan">${mealVegan}</p>
+        <div class="recipe-instruct">
+            <h3>Summary</h3>
+            <p>${meal.summary}</p>
+        </div>
         <div class="recipe-instruct">
             <h3>Instructions:</h3>
             <p>${mealInstructions}</p>

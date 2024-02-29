@@ -117,6 +117,10 @@ function getMealRecipe(e) {
         var mealItemID = e.target.parentElement.parentElement.getAttribute("data-id");
         fetch(`https://api.spoonacular.com/recipes/${mealItemID}/information?apiKey=7c24c5f6779b417a8c7f91021d764914&includeNutrition=false`)
             .then(response => response.json())
+            .catch(error => {
+                dataContainer.innerHTML = '<p>An error occurred while fetching data</p>';
+                console.error(error);
+            })
             .then(data => {
                 mealRecipeModal(data);
             })
