@@ -91,7 +91,7 @@ function CensorText(uncensored) {
         || uncensored.includes("shit") || uncensored.includes("prostitute") || uncensored.includes("Hillary")  || uncensored.includes("Clinton")
         || uncensored.includes("biden") || uncensored.includes("Biden")  || uncensored.includes("whiskey") || uncensored.includes("vodka")
         || uncensored.includes("dirty joke") || uncensored.includes("retar") || uncensored.includes("midget") || uncensored.includes("Libyan")
-        || uncensored.includes("libyan"))
+        || uncensored.includes("libyan") || uncensored.includes("dam"))
         
          {
         console.log("Contains innapropriate content");
