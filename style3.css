@@ -215,7 +215,8 @@ control,
 }
 
 .recipe-sub {
-    text-decoration: underline;
+    margin-top: .2em;
+    font-weight: 600;
     font-style: italic;
     letter-spacing: 1px;
 

@@ -221,10 +221,17 @@ body{
 }
 
 .recipe-sub{
-    text-decoration: underline;
+    margin-top: .2em;
+    font-weight: 600;
     font-style: italic;
     letter-spacing: 1px;
-    padding-bottom: 1rem;
+ 
+}
+
+.recipe-subInfo{
+    font-style: italic;
+    text-decoration: underline;
+    letter-spacing: 1px;
 }
 .recipe-category{
     background: #fff;
@@ -232,24 +239,14 @@ body{
     color: var(--tenne-tawny);
     display: inline-block;
     padding: 0.2rem 0.5rem;
+    margin: .5em;
     border-radius: 0.3rem;
     -webkit-border-radius: 0.3rem;
     -moz-border-radius: 0.3rem;
     -ms-border-radius: 0.3rem;
     -o-border-radius: 0.3rem;
 }
-.recipe-category{
-    background: #fff;
-    font-weight: 600;
-    color: var(--tenne-tawny);
-    display: inline-block;
-    padding: 0.2rem 0.5rem;
-    border-radius: 0.3rem;
-    -webkit-border-radius: 0.3rem;
-    -moz-border-radius: 0.3rem;
-    -ms-border-radius: 0.3rem;
-    -o-border-radius: 0.3rem;
-}
+
 .recipe-instruct{
     padding: 1rem 0;
 }
