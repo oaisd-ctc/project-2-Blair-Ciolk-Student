@@ -9,20 +9,20 @@ recipeCloseBtn.addEventListener('click', () => {
     mealDetailsContent.parentElement.classList.remove('showRecipe');
 })
 
-window.onload=function(){
+window.onload = function () {
     let searchInputTxt = "ice";
     fetch(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=7c24c5f6779b417a8c7f91021d764914&ingredients=${searchInputTxt}`)
-    .then((response) => {
-        if (!response.ok) {
-            throw new Error(`HTTP error: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        let html = "";
-        if (data.length > 0) {
-            data.forEach(results => {
-                html += `
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            let html = "";
+            if (data.length > 0) {
+                data.forEach(results => {
+                    html += `
                     <div class="meal-item" data-id="${results.id}" data-title="${results.title}">
                         <div class="meal-img">
                             <img src="${results.image}" alt="food">
@@ -33,19 +33,19 @@ window.onload=function(){
                         </div>
                     </div>
                 `;
-            });
-            mealList.classList.remove('notFound');
-        } else {
-            html = "No results";
-            mealList.classList.add('notFound');
-        }
-        mealList.innerHTML = escapeHTML(html);
-    })
-    .catch(error => {
-        let unsafeHttpError = `<p style="color: white";>${error}</p>`;
-        let safeHttpE = escapeHTML(unsafeHttpError);
-        mealList.innerHTML += safeHttpE;
-    });
+                });
+                mealList.classList.remove('notFound');
+            } else {
+                html = "No results";
+                mealList.classList.add('notFound');
+            }
+            mealList.innerHTML = escapeHTML(html);
+        })
+        .catch(error => {
+            let unsafeHttpError = `<p style="color: white";>${error}</p>`;
+            let safeHttpE = escapeHTML(unsafeHttpError);
+            mealList.innerHTML += safeHttpE;
+        });
 }
 
 
@@ -53,7 +53,7 @@ window.onload=function(){
 
 function getMealList() {
     let searchInputTxt = document.getElementById('search-input').value.trim();
-        fetch(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=7c24c5f6779b417a8c7f91021d764914&ingredients=${searchInputTxt}`)
+    fetch(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=7c24c5f6779b417a8c7f91021d764914&ingredients=${searchInputTxt}`)
         .then((response) => {
             if (!response.ok) {
                 throw new Error(`HTTP error: ${response.status}`);
@@ -89,9 +89,9 @@ function getMealList() {
             mealList.innerHTML += safeHttpE;
             // console.error(error);
         });
-    
-    
-       
+
+
+
 }
 
 function getMealRecipe(e) {
@@ -114,17 +114,16 @@ function mealRecipeModal(meal) {
     console.log(meal);
     let mealItemTitle = meal.title;
     console.log(mealItemTitle);
-    
-    
+
+
     if (meal.dishTypes[0].length == 0) {
         if (meal.cuisines) {
             let altName = linearSearchForCuisines(meal);
             //let mealCategory = meal.cuisines[0].charAt(0).toUpperCase() + meal.cuisines[0].slice(1);
-            if(meal.vegan == true)
-            {
+            if (meal.vegan == true) {
                 mealVegan = "True";
             }
-            else{
+            else {
                 mealVegan = "False";
             }
             mealInstructions = meal.instructions;
@@ -161,13 +160,12 @@ function mealRecipeModal(meal) {
     }
     else {
         let mealCategory = meal.dishTypes[0].charAt(0).toUpperCase() + meal.dishTypes[0].slice(1);
-        if(meal.vegan == true)
-            {
-                 mealVegan = "True";
-            }
-            else{
-                mealVegan = "False";
-            }
+        if (meal.vegan == true) {
+            mealVegan = "True";
+        }
+        else {
+            mealVegan = "False";
+        }
         mealInstructions = meal.instructions;
         let html = `
         <h2 class="recipe-title">${mealItemTitle}</h2>

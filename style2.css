@@ -20,7 +20,7 @@ html {
     --tenne-tawny: #b7a367;
     --tenne-tawny-dark: #ccb778;
     --renne-rawny: #c5bf89;
-    
+
 }
 
 body {
@@ -225,10 +225,10 @@ control,
 
 }
 
-.recipe-subInfo{
+.recipe-subInfo {
     font-style: italic;
     text-decoration: underline;
-    letter-spacing:  1px;
+    letter-spacing: 1px;
 }
 
 .recipe-category {
@@ -339,7 +339,7 @@ control,
     color: rgb(0, 0, 0);
 }
 
-.meal-search{
+.meal-search {
     padding-top: .5rem;
 }
 

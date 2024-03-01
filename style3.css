@@ -334,7 +334,7 @@ control,
     color: rgb(0, 0, 0);
 }
 
-.meal-search{
+.meal-search {
     padding-top: .5rem;
 }
 
@@ -369,7 +369,7 @@ control,
 @media screen and (min-width: 768px) {
     #meal {
         display: grid;
-      
+
     }
 
     .meal-item {
@@ -380,4 +380,3 @@ control,
         width: 700px;
     }
 }
-
