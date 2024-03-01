@@ -3,55 +3,95 @@ const mealList = document.getElementById('meal');
 const mealDetailsContent = document.querySelector('.meal-details-content');
 const recipeCloseBtn = document.getElementById('recipe-close-btn');
 
-
 searchBtn.addEventListener('click', getMealList);
 mealList.addEventListener('click', getMealRecipe);
 recipeCloseBtn.addEventListener('click', () => {
     mealDetailsContent.parentElement.classList.remove('showRecipe');
 })
 
+window.onload=function(){
+    let searchInputTxt = "ice";
+    fetch(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=7c24c5f6779b417a8c7f91021d764914&ingredients=${searchInputTxt}`)
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        let html = "";
+        if (data.length > 0) {
+            data.forEach(results => {
+                html += `
+                    <div class="meal-item" data-id="${results.id}" data-title="${results.title}">
+                        <div class="meal-img">
+                            <img src="${results.image}" alt="food">
+                        </div>
+                        <div class="meal-name">
+                            <h3>${results.title}</h3>
+                            <a href="#" class="recipe-btn">Get Recipe</a>
+                        </div>
+                    </div>
+                `;
+            });
+            mealList.classList.remove('notFound');
+        } else {
+            html = "No results";
+            mealList.classList.add('notFound');
+        }
+        mealList.innerHTML = escapeHTML(html);
+    })
+    .catch(error => {
+        let unsafeHttpError = `<p style="color: white";>${error}</p>`;
+        let safeHttpE = escapeHTML(unsafeHttpError);
+        mealList.innerHTML += safeHttpE;
+    });
+}
+
+
+
+
 function getMealList() {
     let searchInputTxt = document.getElementById('search-input').value.trim();
-    let mealResults = document.getElementById('meal').html;
-    fetch(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=7c24c5f6779b417a8c7f91021d764914&ingredients=${searchInputTxt}`)
+        fetch(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=7c24c5f6779b417a8c7f91021d764914&ingredients=${searchInputTxt}`)
         .then((response) => {
             if (!response.ok) {
-                mealResults = response.status;
-                throw new Error(`HTTP error`);
+                throw new Error(`HTTP error: ${response.status}`);
             }
-            return response.json()
-        })
-        .catch(error => {
-            mealResults = error;
-            console.log(error);
+            return response.json();
         })
         .then(data => {
             let html = "";
             if (data.length > 0) {
                 data.forEach(results => {
                     html += `
-                 <div class="meal-item" data-id="${results.id}" data-title="${results.title}">
-                     <div class="meal-img">
-                         <img src="${results.image}" alt="food">
-                     </div>
-                     <div class="meal-name">
-                         <h3>${results.title}</h3>
-                         <a href="#" class="recipe-btn">Get Recipe</a>
-                     </div>
-                 </div>
-            `;
+                        <div class="meal-item" data-id="${results.id}" data-title="${results.title}">
+                            <div class="meal-img">
+                                <img src="${results.image}" alt="food">
+                            </div>
+                            <div class="meal-name">
+                                <h3>${results.title}</h3>
+                                <a href="#" class="recipe-btn">Get Recipe</a>
+                            </div>
+                        </div>
+                    `;
                 });
                 mealList.classList.remove('notFound');
-            }
-            else {
+            } else {
                 html = "No results";
                 mealList.classList.add('notFound');
             }
-
             mealList.innerHTML = escapeHTML(html);
         })
-
-
+        .catch(error => {
+            let unsafeHttpError = `<p style="color: white";>${error}</p>`;
+            let safeHttpE = escapeHTML(unsafeHttpError);
+            mealList.innerHTML += safeHttpE;
+            // console.error(error);
+        });
+    
+    
+       
 }
 
 function getMealRecipe(e) {

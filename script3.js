@@ -10,6 +10,43 @@ mealList.addEventListener('click', getMealRecipe);
 recipeCloseBtn.addEventListener('click', () => {
     dataContainer.parentElement.classList.remove('showRecipe');
 });
+
+window.onload=function(){
+    fetch('https://api.api-ninjas.com/v1/jokes?limit=1', {
+        method: 'GET',
+        headers: { 'X-Api-Key': 'A0Hgh3vkAarORorljjhwBg==aB2LWV3ExUoIYH9x' },
+        contentType: 'application/json',
+    })
+        .then(response => response.json())
+        .then(data => {
+            let html = "";
+            if (data[0].joke.length <= 300) {
+                console.log(data[0].joke)
+                if (data[0].joke != null) {
+                    CensorText(data[0].joke);
+                    html += `<h3 class="meal-name">${data[0].joke}</h3>`;
+                    mealList.classList.remove('notFound');
+                } else {
+                    html = "No results";
+                    mealList.classList.add('notFound');
+                }
+                let sanitizedInput = escapeHTML(html);
+                mealList.innerHTML = sanitizedInput;
+            }
+            else {
+                let uniJoke = data[0].joke;
+                console.log(uniJoke);
+
+            }
+
+        })
+        .catch(error => {
+            dataContainer.innerHTML = `<p>An error occurred while fetching data: ${error}</p>`;
+        });
+}
+
+
+
 //https://api.spoonacular.com/food/jokes/random?apiKey=7c24c5f6779b417a8c7f91021d764914
 function fetchData() {
     fetch('https://api.api-ninjas.com/v1/jokes?limit=1', {
@@ -91,20 +128,21 @@ function CensorText(uncensored) {
         || uncensored.includes("shit") || uncensored.includes("prostitute") || uncensored.includes("Hillary")  || uncensored.includes("Clinton")
         || uncensored.includes("biden") || uncensored.includes("Biden")  || uncensored.includes("whiskey") || uncensored.includes("vodka")
         || uncensored.includes("dirty joke") || uncensored.includes("retar") || uncensored.includes("midget") || uncensored.includes("Libyan")
-        || uncensored.includes("libyan") || uncensored.includes("dam"))
-        
+        || uncensored.includes("libyan") || uncensored.includes("damn") || uncensored.includes("isis") || uncensored.includes("ISIS")
+        ||uncensored.includes("spanish") || uncensored.includes("watermelon") || uncensored.includes("jamal") || uncensored.includes("bury")
+        || uncensored.includes("feminate") || uncensored.includes("dwarf") || uncensored.includes("effeminate") || uncensored.includes("church")
+        || uncensored.includes("sermon"))        
          {
-        console.log("Contains innapropriate content");
+        console.log("Contains potentially innapropriate content");
         mealList.innerHTML = `
-
-    <div style="color:white;">
- 
-        <span class="tooltiptext" style="font-size: 1.17em; font-weight:300; ">Joke contained inappropriate content. Try again.</span>
-    </div>`;
-    fetchData();
+            <div style="color:white;">
+                <h3 class="meal-name">What do you call a sleeping T-Rex? A dino-snore!</h3>
+                <p class="meal-sub-name">Previous joke contained potentially innapropriate content, please try again :)</p>
+            </div>`;
+        meal.h3.innerHTML = `<h3 class="meal-name"></h3>`;
+        //fetchData();
         return;
     }
-    
     else {
         return;
     }

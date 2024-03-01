@@ -323,7 +323,16 @@ body{
     background-color: var(--tenne-tawny-dark);
     color: rgb(0, 0, 0);
 }
+#dateDiv {
+    margin-left: auto;
+    margin-right: auto;
+}
 
+#dateTime{
+    position:absolute;
+    margin-left: 30em;
+    font-size: 18px;
+}
 
 
 /* display stuff */

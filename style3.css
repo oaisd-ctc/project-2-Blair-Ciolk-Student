@@ -108,6 +108,10 @@ control,
     color: white;
 }
 
+.meal-sub-name {
+    color: white;
+}
+
 .meal-name h3 {
     font-size: 1.4rem;
 }
