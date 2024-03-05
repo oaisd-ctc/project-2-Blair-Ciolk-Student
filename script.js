@@ -2,12 +2,22 @@ const searchBtn = document.getElementById('search-btn');
 const mealList = document.getElementById('meal');
 const mealDetailsContent = document.querySelector('.meal-details-content');
 const recipeCloseBtn = document.getElementById('recipe-close-btn');
+const saveRecipe = document.getElementById('recipe-save-btn');
 
+
+saveRecipe.addEventListener('click', saveMealRecipe);
 searchBtn.addEventListener('click', getMealList);
-mealList.addEventListener('click', getMealRecipe);
-recipeCloseBtn.addEventListener('click', () => {
+mealList.addEventListener('click', (e) => {
+    const selectRecipe = e.target.closest('.meal-item');
+    selectRecipe.setAttribute("data-active-meal", true);
+    getMealRecipe(e);
+});
+
+recipeCloseBtn.addEventListener('click', (e) => {
     mealDetailsContent.parentElement.classList.remove('showRecipe');
-})
+    const selectRecipe = $("div.meal-item[data-active-meal=true]");
+    selectRecipe.removeAttr("data-active-meal");
+});
 
 window.onload = function () {
     let searchInputTxt = "ice";
@@ -23,13 +33,14 @@ window.onload = function () {
             if (data.length > 0) {
                 data.forEach(results => {
                     html += `
-                    <div class="meal-item" data-id="${results.id}" data-title="${results.title}">
+                    <div class="meal-item" id="${results.id}" data-id="${results.id}" data-title="${results.title}">
                         <div class="meal-img">
                             <img src="${results.image}" alt="food">
                         </div>
                         <div class="meal-name">
                             <h3>${results.title}</h3>
                             <a href="#" class="recipe-btn">Get Recipe</a>
+                            
                         </div>
                     </div>
                 `;
@@ -48,6 +59,30 @@ window.onload = function () {
         });
 }
 
+
+function saveMealRecipe(e)
+{
+    e.preventDefault();
+    const activeMeal =  $("div.meal-item[data-active-meal=true]");
+    // if (e.target.classList.contains('recipe-btn')) {
+        var mealItemID = activeMeal.attr('id');
+                //console.log(mealItem);
+        fetch(`https://api.spoonacular.com/recipes/${mealItemID}/information?apiKey=7c24c5f6779b417a8c7f91021d764914&includeNutrition=false`)
+            .then(response => response.json())
+            .catch(error => alert(error))
+            .then(data => {
+                if (typeof(Storage) !== "undefined"){
+                    localStorage.setItem("selectedMealRecipe", JSON.stringify(data)); 
+                    console.log(JSON.stringify(data));
+                }
+                else{
+                    window.alert("error. local storage not supported. please use a different browser");
+                }
+                
+            })
+    // }
+    
+}
 
 
 
@@ -72,6 +107,7 @@ function getMealList() {
                             <div class="meal-name">
                                 <h3>${results.title}</h3>
                                 <a href="#" class="recipe-btn">Get Recipe</a>
+                                <a href="#" id="save-rcipe-btn">Save Recipe</a>
                             </div>
                         </div>
                     `;
@@ -111,9 +147,9 @@ function escapeHTML(unsafe) {
 }
 
 function mealRecipeModal(meal) {
-    console.log(meal);
+    //console.log(meal);
     let mealItemTitle = meal.title;
-    console.log(mealItemTitle);
+    //console.log(mealItemTitle);
 
 
     if (meal.dishTypes[0].length == 0) {
