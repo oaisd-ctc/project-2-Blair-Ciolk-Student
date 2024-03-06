@@ -23,7 +23,7 @@ window.onload=function(){
         return response.json()
     })
     .catch(error => {
-        let unsafeHT = `<p style="color: white";>Eror: ${error}</p>`;
+        let unsafeHT = `<p style="color: white";> ${error}</p>`;
         let safeHTML = escapeHTML(unsafeHT);
         mealList.innerHTML += safeHTML;
 

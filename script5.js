@@ -1,63 +1,46 @@
-const searchBtn = document.getElementById('search-btn');
-const mealList = document.getElementById('meal');
-const mealDetailsContent = document.querySelector('.meal-details-content');
-const recipeCloseBtn = document.getElementById('recipe-close-btn');
-const saveRecipe = document.getElementById('recipe-save-btn');
 
-saveRecipe.addEventListener('click', saveMealRecipe);
-searchBtn.addEventListener('click', getMealList);
-mealList.addEventListener('click', (e) => {
-    const selectRecipe = e.target.closest('.meal-item');
-    selectRecipe.setAttribute("data-active-meal", true);
+const mealDiv = document.getElementById('meal');
+const mealDetailsContent = document.querySelector('.meal-details-content');
+let html = "";
+
+mealDiv.addEventListener('click', (e) => {
     getMealRecipe(e);
 });
+
+
+window.onload = function () {
+    const savedMeals = JSON.parse(localStorage.getItem('savedMealRecipe'));
+    
+    savedMeals.forEach(result => {
+        html += `
+        <div class="meal-item" data-id="${result.id}" data-title="${result.title}">
+        <div class="meal-img">
+        <img src="${result.image}" alt="food">
+        </div>
+        <div class="meal-name">
+        <h3>${result.title}</h3>
+        <a href="#" class="recipe-btn">Get Recipe</a>
+        <a href="#" id="save-rcipe-btn">Remove</a>
+        </div>
+        </div>`;
+        
+        mealDiv.innerHTML = html;
+    });
+    if(savedMeals.lenth == 0){
+        alert("no favorites");
+    }
+    
+    
+}
+
+const mealList = document.getElementById('meal');
+const recipeCloseBtn = document.getElementById('recipe-close-btn');
 
 recipeCloseBtn.addEventListener('click', (e) => {
     mealDetailsContent.parentElement.classList.remove('showRecipe');
     const selectRecipe = $("div.meal-item[data-active-meal=true]");
     selectRecipe.removeAttr("data-active-meal");
 });
-
-window.onload = function () {
-    if (typeof(Storage) !== "undefined"){console.log(localStorage);} else{alert("local")}
-    let searchInputTxt = "ice";
-    fetch(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=7c24c5f6779b417a8c7f91021d764914&ingredients=${searchInputTxt}`)
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(`HTTP error: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            let html = "";
-            if (data.length > 0) {
-                data.forEach(results => {
-                    html += `
-                    <div class="meal-item" id="${results.id}" data-id="${results.id}" data-title="${results.title}">
-                        <div class="meal-img">
-                            <img src="${results.image}" alt="food">
-                        </div>
-                        <div class="meal-name">
-                            <h3>${results.title}</h3>
-                            <a href="#" class="recipe-btn">Get Recipe</a>
-                            
-                        </div>
-                    </div>
-                `;
-                });
-                mealList.classList.remove('notFound');
-            } else {
-                html = "No results";
-                mealList.classList.add('notFound');
-            }
-            mealList.innerHTML = escapeHTML(html);
-        })
-        .catch(error => {
-            let unsafeHttpError = `<p style="color: white";>${error}</p>`;
-            let safeHttpE = escapeHTML(unsafeHttpError);
-            mealList.innerHTML += safeHttpE;
-        });
-}
 
 var savedMeals = [];
 function saveMealRecipe(e)
@@ -75,7 +58,7 @@ function saveMealRecipe(e)
                     
                     savedMeals.push(data);
                     localStorage.setItem("savedMealRecipe", JSON.stringify(savedMeals));
-                    console.log(localStorage.getItem('savedMealRecipe'));
+                    console.log(savedMeals);
                 }
                 else{
                     window.alert("error. local storage not supported. please use a different browser");
