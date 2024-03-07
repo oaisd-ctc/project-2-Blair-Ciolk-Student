@@ -1,15 +1,21 @@
-
 const mealDiv = document.getElementById('meal');
 const mealDetailsContent = document.querySelector('.meal-details-content');
-let html = "";
+const savedMeals = JSON.parse(localStorage.getItem('savedMealRecipe')) || [];
+
 
 mealDiv.addEventListener('click', (e) => {
+    if(e.target.id === 'remove-rcipie-btn') {
+        const mealIdToRemove = e.target.parentElement.parentElement.dataset.id;
+        removeSavedMeal(mealIdToRemove);
+    }
     getMealRecipe(e);
 });
 
 
+
 window.onload = function () {
-    const savedMeals = JSON.parse(localStorage.getItem('savedMealRecipe'));
+    let html = "";
+    console.log(JSON.stringify(savedMeals));
     
     savedMeals.forEach(result => {
         html += `
@@ -20,16 +26,42 @@ window.onload = function () {
         <div class="meal-name">
         <h3>${result.title}</h3>
         <a href="#" class="recipe-btn">Get Recipe</a>
-        <a href="#" id="save-rcipe-btn">Remove</a>
+        <a href="#" id="remove-rcipe-btn">Remove</a>
         </div>
         </div>`;
         
-        mealDiv.innerHTML = html;
     });
-    if(savedMeals.lenth == 0){
+    mealDiv.innerHTML = html;
+    if(savedMeals.length === 0){
         alert("no favorites");
     }
-    
+}
+
+function removeSavedMeal(mealId){
+    savedMeals = savedMeals.filter(meal => meal.id !== mealId);
+    localStorage.setItem("savedMealRecipe", JSON.stringify(savedMeals));
+
+    let html = "";
+
+    savedMeals.forEach(result=> { 
+        html += `
+        <div class="meal-item" data-id="${result.id}" data-title="${result.title}">
+        <div class="meal-img">
+            <img src="${result.image}" alt="food">
+        </div>
+        <div class="meal-name">
+            <h3>${result.title}</h3>
+            <a href="#" class="recipe-btn">Get Recipe</a>
+            <a href="#" id="remove-rcipe-btn">Remove</a>
+        </div>
+    </div>`;
+    });
+    mealDiv.innerHTML = html;
+    if(savedMeals.length === 0) {
+        alert("no favorites");
+    }
+
+
     
 }
 
@@ -42,7 +74,6 @@ recipeCloseBtn.addEventListener('click', (e) => {
     selectRecipe.removeAttr("data-active-meal");
 });
 
-var savedMeals = [];
 function saveMealRecipe(e)
 {
     e.preventDefault();
@@ -57,8 +88,9 @@ function saveMealRecipe(e)
                 if (typeof(Storage) !== "undefined"){
                     
                     savedMeals.push(data);
-                    localStorage.setItem("savedMealRecipe", JSON.stringify(savedMeals));
                     console.log(savedMeals);
+                    localStorage.getItem("savedMealRecipe");
+                    localStorage.setItem("savedMealRecipe", JSON.stringify(savedMeals));
                 }
                 else{
                     window.alert("error. local storage not supported. please use a different browser");

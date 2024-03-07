@@ -3,6 +3,7 @@ const mealList = document.getElementById('meal');
 const mealDetailsContent = document.querySelector('.meal-details-content');
 const recipeCloseBtn = document.getElementById('recipe-close-btn');
 const saveRecipe = document.getElementById('recipe-save-btn');
+var savedMeals = [];
 
 saveRecipe.addEventListener('click', saveMealRecipe);
 searchBtn.addEventListener('click', getMealList);
@@ -59,7 +60,7 @@ window.onload = function () {
         });
 }
 
-var savedMeals = [];
+
 function saveMealRecipe(e)
 {
     e.preventDefault();
