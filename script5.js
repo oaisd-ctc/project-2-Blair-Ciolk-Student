@@ -1,65 +1,78 @@
-const searchBtn = document.getElementById('search-btn');
-const mealList = document.getElementById('meal');
+const mealDiv = document.getElementById('meal');
 const mealDetailsContent = document.querySelector('.meal-details-content');
-const recipeCloseBtn = document.getElementById('recipe-close-btn');
-const saveRecipe = document.getElementById('recipe-save-btn');
-var savedMeals = [];
+const savedMeals = JSON.parse(localStorage.getItem('savedMealRecipe')) || [];
 
-saveRecipe.addEventListener('click', saveMealRecipe);
-searchBtn.addEventListener('click', getMealList);
-mealList.addEventListener('click', (e) => {
-    const selectRecipe = e.target.closest('.meal-item');
-    selectRecipe.setAttribute("data-active-meal", true);
+
+mealDiv.addEventListener('click', (e) => {
+    if(e.target.id === 'remove-rcipie-btn') {
+        const mealIdToRemove = e.target.parentElement.parentElement.dataset.id;
+        removeSavedMeal(mealIdToRemove);
+    }
     getMealRecipe(e);
 });
+
+
+
+window.onload = function () {
+    let html = "";
+    console.log(JSON.stringify(savedMeals));
+    
+    savedMeals.forEach(result => {
+        html += `
+        <div class="meal-item" data-id="${result.id}" data-title="${result.title}">
+        <div class="meal-img">
+        <img src="${result.image}" alt="food">
+        </div>
+        <div class="meal-name">
+        <h3>${result.title}</h3>
+        <a href="#" class="recipe-btn">Get Recipe</a>
+        <a href="#" id="remove-rcipe-btn">Remove</a>
+        </div>
+        </div>`;
+        
+    });
+    mealDiv.innerHTML = html;
+    if(savedMeals.length === 0){
+        alert("no favorites");
+    }
+}
+
+function removeSavedMeal(mealId){
+    savedMeals = savedMeals.filter(meal => meal.id !== mealId);
+    localStorage.setItem("savedMealRecipe", JSON.stringify(savedMeals));
+
+    let html = "";
+
+    savedMeals.forEach(result=> { 
+        html += `
+        <div class="meal-item" data-id="${result.id}" data-title="${result.title}">
+        <div class="meal-img">
+            <img src="${result.image}" alt="food">
+        </div>
+        <div class="meal-name">
+            <h3>${result.title}</h3>
+            <a href="#" class="recipe-btn">Get Recipe</a>
+            <a href="#" id="remove-rcipe-btn">Remove</a>
+        </div>
+    </div>`;
+    });
+    mealDiv.innerHTML = html;
+    if(savedMeals.length === 0) {
+        alert("no favorites");
+    }
+
+
+    
+}
+
+const mealList = document.getElementById('meal');
+const recipeCloseBtn = document.getElementById('recipe-close-btn');
 
 recipeCloseBtn.addEventListener('click', (e) => {
     mealDetailsContent.parentElement.classList.remove('showRecipe');
     const selectRecipe = $("div.meal-item[data-active-meal=true]");
     selectRecipe.removeAttr("data-active-meal");
 });
-
-window.onload = function () {
-    if (typeof(Storage) !== "undefined"){console.log(localStorage);} else{alert("local")}
-    let searchInputTxt = "ice";
-    fetch(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=7c24c5f6779b417a8c7f91021d764914&ingredients=${searchInputTxt}`)
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error(`HTTP error: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            let html = "";
-            if (data.length > 0) {
-                data.forEach(results => {
-                    html += `
-                    <div class="meal-item" id="${results.id}" data-id="${results.id}" data-title="${results.title}">
-                        <div class="meal-img">
-                            <img src="${results.image}" alt="food">
-                        </div>
-                        <div class="meal-name">
-                            <h3>${results.title}</h3>
-                            <a href="#" class="recipe-btn">Get Recipe</a>
-                            
-                        </div>
-                    </div>
-                `;
-                });
-                mealList.classList.remove('notFound');
-            } else {
-                html = "No results";
-                mealList.classList.add('notFound');
-            }
-            mealList.innerHTML = escapeHTML(html);
-        })
-        .catch(error => {
-            let unsafeHttpError = `<p style="color: white";>${error}</p>`;
-            let safeHttpE = escapeHTML(unsafeHttpError);
-            mealList.innerHTML += safeHttpE;
-        });
-}
-
 
 function saveMealRecipe(e)
 {
@@ -75,8 +88,9 @@ function saveMealRecipe(e)
                 if (typeof(Storage) !== "undefined"){
                     
                     savedMeals.push(data);
+                    console.log(savedMeals);
+                    localStorage.getItem("savedMealRecipe");
                     localStorage.setItem("savedMealRecipe", JSON.stringify(savedMeals));
-                    console.log(localStorage.getItem('savedMealRecipe'));
                 }
                 else{
                     window.alert("error. local storage not supported. please use a different browser");

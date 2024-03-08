@@ -1,9 +1,14 @@
-<!DOCTYPE html><html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Around The Plate</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+        integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
+        crossorigin="anonymous">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -21,7 +26,8 @@
             <!-- API -->
 
             <div class="meal-search-box">
-                <input type="text" class="search-control" placeholder="Enter ingredients (Seperated by comma) or meal" id="search-input">
+                <input type="text" class="search-control" placeholder="Enter ingredients (Seperated by comma) or meal"
+                    id="search-input">
                 <button type="submit" class="search-btn btn" id="search-btn">
                     <i class="fas fa-search"></i>
                 </button>
@@ -49,6 +55,9 @@
             <!-- recipe close btn -->
             <button type="button" class="btn recipe-close-btn" id="recipe-close-btn">
                 <i class="fas fa-times"></i>
+            </button>
+            <button type="button" class="btn recipe-save-btn" id ="recipe-save-btn">
+                <i class="fas fa-save"></i>
             </button>
 
             <!-- meal content -->
@@ -84,20 +93,19 @@
         <a href="searchFoodVideos.html">Search Food Videos</a>
         <a href="randomRec.html">Random Recipes</a>
         <a href="randomJoke.html">Random Joke</a>
+        <a href="savedItems.html">Saved Items</a>
     </div>
-    <div id="dateDiv">
-        <iframe src="https://free.timeanddate.com/clock/i99ln1t4/n4674/tt0" frameborder="0" width="340" height="18"></iframe>
-
-    </div>
+    
 
 
     <!-- API -->
     <script src="https://cdn.jsdelivr.net/npm/dompurify@2.3.3/dist/purify.min.js"></script>
-
-    <script src="script.js">
-    </script>
+    <script src="jquery-3.7.1.js"></script>
+    <script src="script.js"></script>
     <!-- API -->
 
 
 
-</body></html>
+</body>
+
+</html>
