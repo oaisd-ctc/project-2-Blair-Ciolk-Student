@@ -41,7 +41,9 @@ window.onload=function(){
 
         })
         .catch(error => {
-            dataContainer.innerHTML = `<p>An error occurred while fetching data: ${error}</p>`;
+            var errorMessage =  `<p>An error occurred while fetching data: ${error}</p>`;
+            var cleanMessage = escapeHTML(errorMessage);
+            dataContainer.innerHTML =  cleanMessage;
         });
 }
 

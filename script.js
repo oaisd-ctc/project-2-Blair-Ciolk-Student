@@ -3,7 +3,7 @@ const mealList = document.getElementById('meal');
 const mealDetailsContent = document.querySelector('.meal-details-content');
 const recipeCloseBtn = document.getElementById('recipe-close-btn');
 const saveRecipe = document.getElementById('recipe-save-btn');
-var savedMeals = localStorage.getItem("savedMealRecipe") || [];
+var savedMeals = JSON.parse(localStorage.getItem('savedMealRecipe') )|| [];
 
 saveRecipe.addEventListener('click', saveMealRecipe);
 searchBtn.addEventListener('click', getMealList);
@@ -20,10 +20,7 @@ recipeCloseBtn.addEventListener('click', (e) => {
 });
 
 window.onload = function () {
-    if (typeof(Storage) !== "undefined"){
-
-        console.log(localStorage);} else{alert("local")}
-    let searchInputTxt = "ice";
+    if (typeof(Storage) !== "undefined"){console.log(localStorage);} else{alert("local")};
     fetch('data.json')
         .then((response) => {
             if (!response.ok) {
@@ -33,6 +30,7 @@ window.onload = function () {
         })
         .then(data => {
             let html = "";
+
             if (data.length > 0) {
                 data.forEach(results => {
                     html += `
@@ -43,7 +41,6 @@ window.onload = function () {
                         <div class="meal-name">
                             <h3>${results.title}</h3>
                             <a href="#" class="recipe-btn">Get Recipe</a>
-                            
                         </div>
                     </div>
                 `;
@@ -54,7 +51,6 @@ window.onload = function () {
                 mealList.classList.add('notFound');
             }
             mealList.innerHTML = escapeHTML(html);
-
         })
         .catch(error => {
             let unsafeHttpError = `<p style="color: white";>${error}</p>`;
@@ -71,27 +67,23 @@ function saveMealRecipe(e)
     // if (e.target.classList.contains('recipe-btn')) {
         var mealItemID = activeMeal.attr('id');
                 //console.log(mealItem);
-        if(mealItemID == null)
-        {
-            alert("Unfortunately, this recipe is unavailble to save, please visit source page.")
-        }
-        else{
-            fetch(`https://api.spoonacular.com/recipes/${mealItemID}/information?apiKey=7c24c5f6779b417a8c7f91021d764914&includeNutrition=false`)
-                .then(response => response.json())
-                .catch(error => alert(error))
-                .then(data => { 
-                    if (typeof(Storage) !== "undefined"){   
-                        console.log(JSON.stringify(data));
-                        savedMeals.push(JSON.stringify(data));
-                        localStorage.setItem("savedMealRecipe", savedMeals);
-                    }
-                    else{
-                        window.alert("error. local storage not supported. please use a different browser");
-                    }
+        fetch(`https://api.spoonacular.com/recipes/${mealItemID}/information?apiKey=7c24c5f6779b417a8c7f91021d764914&includeNutrition=false`)
+            .then(response => response.json())
+            .catch(error => alert(error))
+            .then(data => { 
+                if (typeof(Storage) !== "undefined"){
                     
-                })
-
-        }
+                    savedMeals.push(data);
+                    localStorage.setItem("savedMealRecipe", JSON.stringify(savedMeals));
+                    console.log('favritd');
+                    console.log(localStorage.getItem('savedMealRecipe'));
+                }
+                else{
+                    window.alert("error. local storage not supported. please use a different browser");
+                }
+                
+            })
+    // }
     
 }
 
@@ -118,7 +110,6 @@ function getMealList() {
                             <div class="meal-name">
                                 <h3>${results.title}</h3>
                                 <a href="#" class="recipe-btn">Get Recipe</a>
-                                
                             </div>
                         </div>
                     `;
@@ -158,12 +149,11 @@ function escapeHTML(unsafe) {
 }
 
 function mealRecipeModal(meal) {
-    //console.log(meal);
     let mealItemTitle = meal.title;
-    //console.log(mealItemTitle);
 
 
-    if (meal.dishTypes[0].length == 0) {
+
+    if (meal.dishTypes.length == 0) {
         if (meal.cuisines) {
             let altName = linearSearchForCuisines(meal);
             //let mealCategory = meal.cuisines[0].charAt(0).toUpperCase() + meal.cuisines[0].slice(1);
@@ -263,9 +253,3 @@ function linearSearchForCuisines(meal) {
 
 
 
-// getSingleCountry("");
-
-//www.themealdb.com/api/json/v1/1/search.php?s=Arrabiata
-//https://api.spoonacular.com/recipes/716429/information?apiKey=dRwhC4AYy0Zu67YNxqqXPrs9mr2FNITeeotbxFBa
-// http://countryapi.gear.host/v1/Country/getCountries
-//
