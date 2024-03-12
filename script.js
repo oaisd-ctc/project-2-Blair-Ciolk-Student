@@ -2,10 +2,10 @@ const searchBtn = document.getElementById('search-btn');
 const mealList = document.getElementById('meal');
 const mealDetailsContent = document.querySelector('.meal-details-content');
 const recipeCloseBtn = document.getElementById('recipe-close-btn');
-const saveRecipe = document.getElementById('recipe-save-btn');
+// const saveRecipe = document.getElementById('recipe-save-btn');
 var savedMeals = [];
 
-saveRecipe.addEventListener('click', saveMealRecipe);
+// saveRecipe.addEventListener('click', saveMealRecipe);
 searchBtn.addEventListener('click', getMealList);
 mealList.addEventListener('click', (e) => {
     const selectRecipe = e.target.closest('.meal-item');
@@ -41,7 +41,6 @@ window.onload = function () {
                         <div class="meal-name">
                             <h3>${results.title}</h3>
                             <a href="#" class="recipe-btn">Get Recipe</a>
-                            
                         </div>
                     </div>
                 `;
@@ -110,7 +109,6 @@ function getMealList() {
                             <div class="meal-name">
                                 <h3>${results.title}</h3>
                                 <a href="#" class="recipe-btn">Get Recipe</a>
-                                <a href="#" id="save-rcipe-btn">Save Recipe</a>
                             </div>
                         </div>
                     `;
