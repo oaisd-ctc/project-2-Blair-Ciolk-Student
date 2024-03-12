@@ -3,7 +3,7 @@ const mealList = document.getElementById('meal');
 const mealDetailsContent = document.querySelector('.meal-details-content');
 const recipeCloseBtn = document.getElementById('recipe-close-btn');
 const saveRecipe = document.getElementById('recipe-save-btn');
-var savedMeals = [];
+var savedMeals = localStorage.getItem("savedMealRecipe") || [];
 
 saveRecipe.addEventListener('click', saveMealRecipe);
 searchBtn.addEventListener('click', getMealList);
@@ -20,9 +20,11 @@ recipeCloseBtn.addEventListener('click', (e) => {
 });
 
 window.onload = function () {
-    if (typeof(Storage) !== "undefined"){console.log(localStorage);} else{alert("local")}
+    if (typeof(Storage) !== "undefined"){
+
+        console.log(localStorage);} else{alert("local")}
     let searchInputTxt = "ice";
-    fetch(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=7c24c5f6779b417a8c7f91021d764914&ingredients=${searchInputTxt}`)
+    fetch('data.json')
         .then((response) => {
             if (!response.ok) {
                 throw new Error(`HTTP error: ${response.status}`);
@@ -52,6 +54,7 @@ window.onload = function () {
                 mealList.classList.add('notFound');
             }
             mealList.innerHTML = escapeHTML(html);
+
         })
         .catch(error => {
             let unsafeHttpError = `<p style="color: white";>${error}</p>`;
@@ -68,22 +71,27 @@ function saveMealRecipe(e)
     // if (e.target.classList.contains('recipe-btn')) {
         var mealItemID = activeMeal.attr('id');
                 //console.log(mealItem);
-        fetch(`https://api.spoonacular.com/recipes/${mealItemID}/information?apiKey=7c24c5f6779b417a8c7f91021d764914&includeNutrition=false`)
-            .then(response => response.json())
-            .catch(error => alert(error))
-            .then(data => { 
-                if (typeof(Storage) !== "undefined"){
+        if(mealItemID == null)
+        {
+            alert("Unfortunately, this recipe is unavailble to save, please visit source page.")
+        }
+        else{
+            fetch(`https://api.spoonacular.com/recipes/${mealItemID}/information?apiKey=7c24c5f6779b417a8c7f91021d764914&includeNutrition=false`)
+                .then(response => response.json())
+                .catch(error => alert(error))
+                .then(data => { 
+                    if (typeof(Storage) !== "undefined"){   
+                        console.log(JSON.stringify(data));
+                        savedMeals.push(JSON.stringify(data));
+                        localStorage.setItem("savedMealRecipe", savedMeals);
+                    }
+                    else{
+                        window.alert("error. local storage not supported. please use a different browser");
+                    }
                     
-                    savedMeals.push(data);
-                    localStorage.setItem("savedMealRecipe", JSON.stringify(savedMeals));
-                    console.log(localStorage.getItem('savedMealRecipe'));
-                }
-                else{
-                    window.alert("error. local storage not supported. please use a different browser");
-                }
-                
-            })
-    // }
+                })
+
+        }
     
 }
 
@@ -110,7 +118,7 @@ function getMealList() {
                             <div class="meal-name">
                                 <h3>${results.title}</h3>
                                 <a href="#" class="recipe-btn">Get Recipe</a>
-                                <a href="#" id="save-rcipe-btn">Save Recipe</a>
+                                
                             </div>
                         </div>
                     `;

@@ -15,11 +15,24 @@ html {
 }
 
 :root {
+    --grid-unit: 1rem;
+    --border-radius-base: .5rem;
     --tenne-tawny: #b7a367;
     --tenne-tawnee: #a8955c;
     --tenne-tawny-dark: #ccb778;
     --renne-rawny: #c5bf89;
 }
+
+[data-theme="light"] {
+    --color-bg: #ffffff;
+    --color-fg: #000000;
+  }
+  
+  [data-theme="dark"] {
+    --color-bg: #000000;
+    --color-fg: #ffffff;
+  }
+
 
 body {
     font-weight: 300;
