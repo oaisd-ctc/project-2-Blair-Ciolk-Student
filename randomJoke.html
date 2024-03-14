@@ -18,7 +18,8 @@
 <body>
     <div class="meal-wrapper">
         <h1 id="webTitle" class="title">Around the Plate: World Foods Edition</h1>
-        <br>
+
+        <button class="theme-btn" onclick="toggleTheme()">Change Theme</button>
         <div class="meal-search">
             <h2 class="title" id="subTitle">Random Joke</h2>
             <button type="button" id="fetchButton">Click Here For Joke</button>
@@ -26,15 +27,12 @@
 
         <div class="meal-result">
             <h2 class="title">Your Results:</h2>
-            <div id="meal">
+            <div id="joke">
             </div>
         </div>
 
         <div class="meal-details">
-            <!-- recipe close btn -->
-            <button type="button" class="btn recipe-close-btn" id="recipe-close-btn">
-                <i class="fas fa-times"></i>
-            </button>
+           
 
             <!-- meal content -->
             <div id="meal-details-content">

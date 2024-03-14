@@ -9,38 +9,56 @@ mealDiv.addEventListener('click', (e) => {
         removeSavedMeal(mealIdToRemove);
     }
     else if (e.target.classList.contains('recipe-btn')) {
-        const mealIdToShow = e.target.parentElment.parentElement.dataset.id;
+        const mealIdToShow = e.target.parentElement.parentElement.dataset.id;
         getMealRecipe(mealIdToShow)
     }
 })
 
+function toggleTheme() {
+    var theme = document.getElementsByTagName('link')[0];
+    var themeDocu = theme.getAttribute('href');
+    if (themeDocu.includes('style5.css')) {
+        theme.setAttribute('href', 'darkStyle.css');
+        localStorage.setItem("websiteTheme", 'darkStyle.css');
+    } else {
+        theme.setAttribute('href', 'style.css');
+        localStorage.setItem("websiteTheme", 'style5.css');
+    }
+    console.log(localStorage.getItem("websiteTheme"));
+}
+
+function setTheme() {
+    var getLSWebsiteTheme = localStorage.getItem("websiteTheme");
+    var theme = document.getElementsByTagName('link')[0];
+    if(getLSWebsiteTheme === 'darkStyle.css' || getLSWebsiteTheme === 'darkStyle3.css') {
+        theme.setAttribute('href', 'darkStyle.css');
+    } else{
+        theme.setAttribute('href', 'style5.css')
+    }
+}
+
+
 function checkNullValues(savedMeals) {
     var filteredMeals = savedMeals.filter(meal => {
         // Check if any property of the meal is null
-        for (let key in savedMeals) {
-          if (meal === null) {
+        for (let key in meal) {
+          if (key=== null) {
             return false; // Return false to exclude this meal
-          }
-          // Check if any element of ingredients array is null
-          if (Array.isArray(meal[key])) {
-            if (meal[key].some(item => item === null)) {
-              return false; // Return false to exclude this meal
-            }
           }
         }
         return true; // Return true to include this meal
       });
-    
       return filteredMeals;
 }
 
 window.onload = function () {
+    setTheme();
     displaySavedMeals();
 }
 
 function removeSavedMeal(mealId) {
     var savedItemsHaveNull = checkNullValues(savedMeals);
-    if(!savedItemsHaveNull){
+    if(savedItemsHaveNull){
         savedMeals = savedMeals.filter(meal => meal.id !== Number(mealId));
     
         localStorage.setItem("savedMealRecipe", JSON.stringify(savedMeals));
@@ -55,7 +73,6 @@ function removeSavedMeal(mealId) {
             }
         }
         // displaySavedMeals();
-        
     }
 
 }
@@ -163,7 +180,7 @@ function displaySavedMeals() {
     }
 
     if (savedMeals.length === 0) {
-        alert("no favorites");
+        // alert("no favorites");
     }
 }
 function getMealRecipe(mealId) {

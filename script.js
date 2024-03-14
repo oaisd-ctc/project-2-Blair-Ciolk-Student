@@ -3,7 +3,7 @@ const mealList = document.getElementById('meal');
 const mealDetailsContent = document.querySelector('.meal-details-content');
 const recipeCloseBtn = document.getElementById('recipe-close-btn');
 const saveRecipe = document.getElementById('recipe-save-btn');
-var savedMeals = JSON.parse(localStorage.getItem('savedMealRecipe') )|| [];
+var savedMeals = JSON.parse(localStorage.getItem('savedMealRecipe')) || [];
 
 saveRecipe.addEventListener('click', saveMealRecipe);
 searchBtn.addEventListener('click', getMealList);
@@ -19,8 +19,35 @@ recipeCloseBtn.addEventListener('click', (e) => {
     selectRecipe.removeAttr("data-active-meal");
 });
 
+
+function toggleTheme() {
+    var theme = document.getElementsByTagName('link')[0];
+    var themeDocu = theme.getAttribute('href');
+    if (themeDocu.includes('style.css')) {
+        theme.setAttribute('href', 'darkStyle.css');
+        localStorage.setItem("websiteTheme", 'darkStyle.css');
+    } else {
+        theme.setAttribute('href', 'style.css');
+        localStorage.setItem("websiteTheme", 'style.css');
+    }
+    console.log(localStorage.getItem("websiteTheme"));
+}
+
+function setTheme() {
+    var getLSWebsiteTheme = localStorage.getItem("websiteTheme");
+    var theme = document.getElementsByTagName('link')[0];
+    if (getLSWebsiteTheme === 'darkStyle.css' || getLSWebsiteTheme === 'darkStyle3.css') {
+        theme.setAttribute('href', 'darkStyle.css');
+    } else {
+        theme.setAttribute('href', 'style.css');
+    }
+}
+
+
+
 window.onload = function () {
-    if (typeof(Storage) !== "undefined"){console.log(localStorage);} else{alert("local")};
+    setTheme();
+    if (typeof (Storage) !== "undefined") { console.log(localStorage); } else { alert("local") };
     fetch('data.json')
         .then((response) => {
             if (!response.ok) {
@@ -60,31 +87,30 @@ window.onload = function () {
 }
 
 
-function saveMealRecipe(e)
-{
+function saveMealRecipe(e) {
     e.preventDefault();
-    const activeMeal =  $("div.meal-item[data-active-meal=true]");
+    const activeMeal = $("div.meal-item[data-active-meal=true]");
     // if (e.target.classList.contains('recipe-btn')) {
-        var mealItemID = activeMeal.attr('id');
-                //console.log(mealItem);
-        fetch(`https://api.spoonacular.com/recipes/${mealItemID}/information?apiKey=7c24c5f6779b417a8c7f91021d764914&includeNutrition=false`)
-            .then(response => response.json())
-            .catch(error => alert(error))
-            .then(data => { 
-                if (typeof(Storage) !== "undefined"){
-                    
-                    savedMeals.push(data);
-                    localStorage.setItem("savedMealRecipe", JSON.stringify(savedMeals));
-                    console.log('favritd');
-                    console.log(localStorage.getItem('savedMealRecipe'));
-                }
-                else{
-                    window.alert("error. local storage not supported. please use a different browser");
-                }
-                
-            })
+    var mealItemID = activeMeal.attr('id');
+    //console.log(mealItem);
+    fetch(`https://api.spoonacular.com/recipes/${mealItemID}/information?apiKey=7c24c5f6779b417a8c7f91021d764914&includeNutrition=false`)
+        .then(response => response.json())
+        .catch(error => alert(error))
+        .then(data => {
+            if (typeof (Storage) !== "undefined") {
+
+                savedMeals.push(data);
+                localStorage.setItem("savedMealRecipe", JSON.stringify(savedMeals));
+                console.log('favritd');
+                console.log(localStorage.getItem('savedMealRecipe'));
+            }
+            else {
+                window.alert("error. local storage not supported. please use a different browser");
+            }
+
+        })
     // }
-    
+
 }
 
 
@@ -250,6 +276,5 @@ function linearSearchForCuisines(meal) {
     }
     return alert('Cuisines not found in meal object');
 }
-
 
 
