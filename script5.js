@@ -1,68 +1,80 @@
 const mealDiv = document.getElementById('meal');
 const mealDetailsContent = document.querySelector('.meal-details-content');
-const savedMeals = JSON.parse(localStorage.getItem('savedMealRecipe')) || [];
+var savedMeals = JSON.parse(localStorage.getItem('savedMealRecipe')) || [];
 
 
 mealDiv.addEventListener('click', (e) => {
-    if(e.target.id === 'remove-rcipie-btn') {
-        const mealIdToRemove = e.target.parentElement.parentElement.dataset.id;
+    if (e.target.classList.contains('remove-recipe-btn')) {
+        const mealIdToRemove = e.target.closest('.meal-item').dataset.id;
         removeSavedMeal(mealIdToRemove);
     }
-    getMealRecipe(e);
-});
+    else if (e.target.classList.contains('recipe-btn')) {
+        const mealIdToShow = e.target.parentElement.parentElement.dataset.id;
+        getMealRecipe(mealIdToShow)
+    }
+})
 
+function toggleTheme() {
+    var theme = document.getElementsByTagName('link')[0];
+    var themeDocu = theme.getAttribute('href');
+    if (themeDocu.includes('style5.css')) {
+        theme.setAttribute('href', 'darkStyle.css');
+        localStorage.setItem("websiteTheme", 'darkStyle.css');
+    } else {
+        theme.setAttribute('href', 'style.css');
+        localStorage.setItem("websiteTheme", 'style5.css');
+    }
+    console.log(localStorage.getItem("websiteTheme"));
+}
 
-
-window.onload = function () {
-    let html = "";
-    console.log(JSON.stringify(savedMeals));
-    
-    savedMeals.forEach(result => {
-        html += `
-        <div class="meal-item" data-id="${result.id}" data-title="${result.title}">
-        <div class="meal-img">
-        <img src="${result.image}" alt="food">
-        </div>
-        <div class="meal-name">
-        <h3>${result.title}</h3>
-        <a href="#" class="recipe-btn">Get Recipe</a>
-        <a href="#" id="remove-rcipe-btn">Remove</a>
-        </div>
-        </div>`;
-        
-    });
-    mealDiv.innerHTML = html;
-    if(savedMeals.length === 0){
-        alert("no favorites");
+function setTheme() {
+    var getLSWebsiteTheme = localStorage.getItem("websiteTheme");
+    var theme = document.getElementsByTagName('link')[0];
+    if(getLSWebsiteTheme === 'darkStyle.css' || getLSWebsiteTheme === 'darkStyle3.css') {
+        theme.setAttribute('href', 'darkStyle.css');
+    } else{
+        theme.setAttribute('href', 'style5.css')
     }
 }
 
-function removeSavedMeal(mealId){
-    savedMeals = savedMeals.filter(meal => meal.id !== mealId);
-    localStorage.setItem("savedMealRecipe", JSON.stringify(savedMeals));
 
-    let html = "";
+function checkNullValues(savedMeals) {
+    var filteredMeals = savedMeals.filter(meal => {
+        // Check if any property of the meal is null
+        for (let key in meal) {
+          if (key=== null) {
+            return false; // Return false to exclude this meal
+          }
+        }
+        return true; // Return true to include this meal
+      });
+      return filteredMeals;
+}
 
-    savedMeals.forEach(result=> { 
-        html += `
-        <div class="meal-item" data-id="${result.id}" data-title="${result.title}">
-        <div class="meal-img">
-            <img src="${result.image}" alt="food">
-        </div>
-        <div class="meal-name">
-            <h3>${result.title}</h3>
-            <a href="#" class="recipe-btn">Get Recipe</a>
-            <a href="#" id="remove-rcipe-btn">Remove</a>
-        </div>
-    </div>`;
-    });
-    mealDiv.innerHTML = html;
-    if(savedMeals.length === 0) {
-        alert("no favorites");
+window.onload = function () {
+    setTheme();
+    displaySavedMeals();
+}
+
+function removeSavedMeal(mealId) {
+    var savedItemsHaveNull = checkNullValues(savedMeals);
+    if(savedItemsHaveNull){
+        savedMeals = savedMeals.filter(meal => meal.id !== Number(mealId));
+    
+        localStorage.setItem("savedMealRecipe", JSON.stringify(savedMeals));
+    
+    
+        for (let i = 0; i < mealDiv.children.length; i++) {
+            let child = mealDiv.children[i];
+            let dataId = child.getAttribute('data-id');
+            if (dataId === mealId) {
+                mealDiv.removeChild(child);
+                break;
+            }
+        }
+        // displaySavedMeals();
     }
 
-
-    
 }
 
 const mealList = document.getElementById('meal');
@@ -74,34 +86,37 @@ recipeCloseBtn.addEventListener('click', (e) => {
     selectRecipe.removeAttr("data-active-meal");
 });
 
-function saveMealRecipe(e)
-{
-    e.preventDefault();
-    const activeMeal =  $("div.meal-item[data-active-meal=true]");
-    // if (e.target.classList.contains('recipe-btn')) {
-        var mealItemID = activeMeal.attr('id');
-                //console.log(mealItem);
-        fetch(`https://api.spoonacular.com/recipes/${mealItemID}/information?apiKey=7c24c5f6779b417a8c7f91021d764914&includeNutrition=false`)
-            .then(response => response.json())
-            .catch(error => alert(error))
-            .then(data => { 
-                if (typeof(Storage) !== "undefined"){
-                    
-                    savedMeals.push(data);
-                    console.log(savedMeals);
-                    localStorage.getItem("savedMealRecipe");
-                    localStorage.setItem("savedMealRecipe", JSON.stringify(savedMeals));
-                }
-                else{
-                    window.alert("error. local storage not supported. please use a different browser");
-                }
-                
-            })
-    // }
-    
+function saveMealRecipe(meal) {
+    var textFile = null,
+        makeTextFile = function (text) {
+            var data = new Blob([text], { type: 'text/plain' });
+
+            if (textFile != null) {
+                window.URL.revokeObjectURL(textFile);
+            }
+            textFile = window.URL.createObjectURL(data);
+
+            return textFile;
+        };
+    console.log(textFile);
+    if (typeof (Storage) === "undefined") {
+        // Check if meal already exists in savedMeals
+        const existingMeal = savedMeals.find(savedMeal => savedMeal.id === meal.id);
+        if (!existingMeal) {
+            // Add the new meal to savedMeals
+            savedMeals.push(meal);
+            // Update localStorage with the updated savedMeals
+            localStorage.setItem("savedMealRecipe", JSON.stringify(savedMeals));
+            // Display the updated saved meals
+            displaySavedMeals();
+            alert("Meal saved successfully!");
+        } else {
+            alert("This meal is already saved!");
+        }
+    } else {
+        window.alert("Error: Local storage not supported. Please use a different browser.");
+    }
 }
-
-
 
 function getMealList() {
     let searchInputTxt = document.getElementById('search-input').value.trim();
@@ -113,28 +128,7 @@ function getMealList() {
             return response.json();
         })
         .then(data => {
-            let html = "";
-            if (data.length > 0) {
-                data.forEach(results => {
-                    html += `
-                        <div class="meal-item" data-id="${results.id}" data-title="${results.title}">
-                            <div class="meal-img">
-                                <img src="${results.image}" alt="food">
-                            </div>
-                            <div class="meal-name">
-                                <h3>${results.title}</h3>
-                                <a href="#" class="recipe-btn">Get Recipe</a>
-                                <a href="#" id="save-rcipe-btn">Save Recipe</a>
-                            </div>
-                        </div>
-                    `;
-                });
-                mealList.classList.remove('notFound');
-            } else {
-                html = "No results";
-                mealList.classList.add('notFound');
-            }
-            mealList.innerHTML = escapeHTML(html);
+
         })
         .catch(error => {
             let unsafeHttpError = `<p style="color: white";>${error}</p>`;
@@ -142,22 +136,62 @@ function getMealList() {
             mealList.innerHTML += safeHttpE;
             // console.error(error);
         });
-
-
-
 }
 
-function getMealRecipe(e) {
-    e.preventDefault();
-    if (e.target.classList.contains('recipe-btn')) {
-        var mealItemID = e.target.parentElement.parentElement.getAttribute("data-id");
-        //console.log(mealItem);
-        fetch(`https://api.spoonacular.com/recipes/${mealItemID}/information?apiKey=7c24c5f6779b417a8c7f91021d764914&includeNutrition=false`)
-            .then(response => response.json())
-            .then(data => {
-                mealRecipeModal(data);
-            })
+
+
+function displaySavedMeals() {
+    let html = "";
+
+
+    if (savedMeals != null) {
+        savedMeals.forEach(r => {
+            if (r  != null) {
+                var result = r;
+
+                html += `
+               <div class="meal-item" data-id="${result.id}" data-title="${result.title}">
+               <div class="meal-img">
+               <img src="${result.image}" alt="food">
+               </div>
+               <div class="meal-name">
+               <h3>${result.title}</h3>
+               <a href="#" class="recipe-btn">Get Recipe</a>
+               <a href="#" class="remove-recipe-btn">Remove</a>
+               </div>
+               </div>`;
+
+                mealDiv.innerHTML = html;
+            }
+
+        });
     }
+    else {
+        for (let i = 0; i < mealDiv.children.length; i++) {
+            let child = mealDiv.children[i];
+            let dataId = child.getAttribute('data-id');
+            if (dataId === mealId) {
+                savedMeals = savedMeals.filter(meal => meal.id !== mealId);
+                localStorage.setItem("savedMealRecipe", JSON.stringify(savedMeals));
+                mealDiv.removeChild(child);
+                break;
+            }
+        }
+    }
+
+    if (savedMeals.length === 0) {
+        // alert("no favorites");
+    }
+}
+function getMealRecipe(mealId) {
+    fetch(`https://api.spoonacular.com/recipes/${mealId}/information?apiKey=7c24c5f6779b417a8c7f91021d764914&includeNutrition=false`)
+        .then(response => response.json())
+        .then(data => {
+            mealRecipeModal(data);
+        })
+        .catch(error => {
+            console.error("error fetching meal recipe: ", error);
+        })
 }
 function escapeHTML(unsafe) {
     return DOMPurify.sanitize(unsafe);
@@ -267,11 +301,5 @@ function linearSearchForCuisines(meal) {
     return alert('Cuisines not found in meal object');
 }
 
-
-
-// getSingleCountry("");
-
 //www.themealdb.com/api/json/v1/1/search.php?s=Arrabiata
 //https://api.spoonacular.com/recipes/716429/information?apiKey=dRwhC4AYy0Zu67YNxqqXPrs9mr2FNITeeotbxFBa
-// http://countryapi.gear.host/v1/Country/getCountries
-//

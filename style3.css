@@ -84,7 +84,10 @@ control,
 .meal-result {
     margin-top: 4rem;
 }
-
+.meal-name {
+    padding: 0.8rem 0.5rem;
+    color: white;
+}
 
 .meal-item {
     background-color: var(--tenne-tawnee);
@@ -104,8 +107,9 @@ control,
 }
 
 .meal-name {
-    padding: .8rem 0.5rem;
+    padding: 1.5rem 0.5rem;
     color: white;
+    text-align: center; /* Add this line to center the text */
 }
 
 .meal-sub-name {
@@ -113,7 +117,21 @@ control,
 }
 
 .meal-name h3 {
-    font-size: 1.4rem;
+    padding: 1.5rem 0.5rem;
+    color: white;
+    text-align: center; /* Add this line to center the text */
+}
+.theme-btn{
+    background: var(--tenne-tawny-dark) ;
+    font-size:1.1rem;
+    padding: .5rem;
+    display: inline;
+    border-radius: 2rem;
+    transition: all 0.4s linear;
+    -webkit-transition: all 0.4s linear;
+    -moz-transition: all 0.4s linear;
+    -ms-transition: all 0.4s linear;
+    -o-transition: all 0.4s linear;
 }
 
 .recipe-btn {
@@ -309,6 +327,8 @@ control,
     position: fixed;
     bottom: 0;
     width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 /* Style the links inside the navigation bar */

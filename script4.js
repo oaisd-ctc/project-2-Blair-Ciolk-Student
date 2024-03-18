@@ -9,8 +9,31 @@ recipeCloseBtn.addEventListener('click', () => {
     mealDetailsContent.parentElement.classList.remove('showRecipe');
 })
 
+function setTheme() {
+    var getLSWebsiteTheme = localStorage.getItem("websiteTheme");
+    var theme = document.getElementsByTagName('link')[0];
+    if(getLSWebsiteTheme === 'darkStyle.css' || getLSWebsiteTheme === 'darkStyle3.css') {
+        theme.setAttribute('href', 'darkStyle.css');
+    } else{
+        theme.setAttribute('href', 'style.css')
+    }
+}
+
+function toggleTheme() {
+    var theme = document.getElementsByTagName('link')[0];
+    var themeDocu = theme.getAttribute('href');
+    if (themeDocu.includes('style4.css')) {
+        theme.setAttribute('href', 'darkStyle.css');
+        localStorage.setItem("websiteTheme", 'darkStyle.css');
+    } else {
+        theme.setAttribute('href', 'style.css');
+        localStorage.setItem("websiteTheme", 'style4.css');
+    }
+    console.log(localStorage.getItem("websiteTheme"));
+}
 
 window.onload=function(){
+    setTheme();
     let searchInputTxt = "pizza";
     let mealResults = document.getElementById('meal').html;
     fetch(`https://api.spoonacular.com/food/videos/search?apiKey=7c24c5f6779b417a8c7f91021d764914&query=${searchInputTxt}`)
