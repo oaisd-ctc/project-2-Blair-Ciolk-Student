@@ -9,11 +9,30 @@ recipeCloseBtn.addEventListener('click', () => {
     dataContainer.parentElement.classList.remove('showRecipe');
 });
 
-
-
+function setTheme() {
+    var getLSWebsiteTheme = localStorage.getItem("websiteTheme");
+    var theme = document.getElementsByTagName('link')[0];
+    if (getLSWebsiteTheme === 'darkStyle.css' || getLSWebsiteTheme === 'darkStyle3.css') {
+        theme.setAttribute('href', 'darkStyle.css');
+    } else {
+        theme.setAttribute('href', 'style2.css');
+    }
+}
+function toggleTheme() {
+    var theme = document.getElementsByTagName('link')[0];
+    var themeDocu = theme.getAttribute('href');
+    if (themeDocu.includes('style2.css')) {
+        theme.setAttribute('href', 'darkStyle.css');
+        localStorage.setItem("websiteTheme", 'darkStyle.css');
+    } else {
+        theme.setAttribute('href', 'style.css');
+        localStorage.setItem("websiteTheme", 'style2.css');
+    }
+    console.log(localStorage.getItem("websiteTheme"));
+}
 
 window.onload=function(){
-    //alert("test");
+    setTheme();
     fetch('https://api.spoonacular.com/recipes/random?apiKey=7c24c5f6779b417a8c7f91021d764914&number=6')
         .then(response => response.json())
         .then(data => {
