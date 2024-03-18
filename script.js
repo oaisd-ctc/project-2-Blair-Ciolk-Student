@@ -5,7 +5,7 @@ const recipeCloseBtn = document.getElementById('recipe-close-btn');
 const saveRecipe = document.getElementById('recipe-save-btn');
 var savedMeals = JSON.parse(localStorage.getItem('savedMealRecipe')) || [];
 
-saveRecipe.addEventListener('click', saveMealRecipe);
+// saveRecipe.addEventListener('click', saveMealRecipe);
 searchBtn.addEventListener('click', getMealList);
 mealList.addEventListener('click', (e) => {
     const selectRecipe = e.target.closest('.meal-item');
